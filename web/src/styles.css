@@ -1,0 +1,272 @@
+:root {
+  --bg-top: #f6f3ea;
+  --bg-bottom: #e8eff7;
+  --ink-strong: #1a202c;
+  --ink-muted: #5a6472;
+  --panel: #ffffffd9;
+  --border: #ced6e2;
+  --accent: #cf5b1b;
+  --accent-soft: #fbe2d3;
+  --stage-bg: #12161d;
+  --danger: #b11414;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: "IBM Plex Sans KR", "Noto Sans KR", "Segoe UI", sans-serif;
+  color: var(--ink-strong);
+  background:
+    radial-gradient(circle at 15% 12%, #ffffff 0%, transparent 44%),
+    radial-gradient(circle at 82% 8%, #ffedd6 0%, transparent 36%),
+    linear-gradient(165deg, var(--bg-top), var(--bg-bottom));
+}
+
+.app {
+  min-height: 100%;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.topbar {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.project-input {
+  flex: 1 1 360px;
+  min-width: 220px;
+}
+
+input,
+select,
+button {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  height: 36px;
+  padding: 0 10px;
+  font-size: 14px;
+  background: #fff;
+  color: var(--ink-strong);
+}
+
+button {
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  background: #f7fafc;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.error-box {
+  padding: 8px 10px;
+  border-radius: 9px;
+  color: #fff;
+  background: var(--danger);
+  font-size: 13px;
+}
+
+.main-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) 380px;
+  gap: 12px;
+}
+
+.stage-panel {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.stage-wrap {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, #1a2130, #0d1016),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 14px,
+      rgba(255, 255, 255, 0.03) 14px,
+      rgba(255, 255, 255, 0.03) 28px
+    );
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  padding: 12px;
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  letter-spacing: 0.2px;
+}
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-panel label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.check {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+  color: var(--ink-strong) !important;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+}
+
+.debug-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.debug-block {
+  min-height: 0;
+}
+
+.debug-block h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.debug-scroll {
+  max-height: 170px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #edf1f7;
+  padding: 4px 6px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+}
+
+.log-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.log-item {
+  padding: 6px 8px;
+  font-size: 12px;
+  display: grid;
+  grid-template-columns: 92px 1fr 50px 70px;
+  gap: 8px;
+  border-bottom: 1px solid #edf1f7;
+}
+
+.log-item.warning {
+  display: block;
+  color: #6a3d00;
+  background: var(--accent-soft);
+}
+
+@media (max-width: 1120px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stage-wrap {
+    min-height: 280px;
+  }
+
+  .debug-scroll {
+    max-height: 220px;
+  }
+}

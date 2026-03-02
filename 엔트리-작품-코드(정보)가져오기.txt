@@ -1,0 +1,168 @@
+// entry-select-project.js
+// Node 18+ (global fetch). Node 16이면 undici 설치 후 아래 주석 참고.
+
+const DEFAULT_BASE_URL = "https://playentry.org";
+
+/**
+ * Entry GraphQL: SELECT_PROJECT
+ * - POST /graphql/SELECT_PROJECT
+ * - project(id, groupId) 상세 + 런타임 데이터(objects/variables/scenes 등) :contentReference[oaicite:1]{index=1}
+ */
+const SELECT_PROJECT_QUERY = /* GraphQL */ `
+query SELECT_PROJECT($id: ID!, $groupId: ID) {
+  project(id: $id, groupId: $groupId) {
+    id
+    name
+    isopen
+    showComment
+    blamed
+    category
+    categoryCode
+    created
+    updated
+    published
+    isFirstPublish
+    special
+    staffPicked
+    ranked
+    visit
+    likeCnt
+    comment
+    favorite
+    shortenUrl
+    hashId
+    tags
+    description
+    description2
+    description3
+
+    thumb { filename imageType }
+
+    parent {
+      id
+      name
+      user { id nickname }
+    }
+
+    commentGroup { group count }
+    likeCntGroup { group count }
+    visitGroup { group count }
+    recentGroup { group count }
+
+    user {
+      id
+      nickname
+      profileImage { filename imageType }
+      status { following follower }
+      description
+      role
+      mark { filename imageType }
+    }
+
+    speed
+    objects
+    variables
+    messages
+    functions
+    tables
+    scenes
+    cloudVariable
+    learning
+    expansionBlocks
+    aiUtilizeBlocks
+    hardwareLiteBlocks
+    blockCategoryUsage
+
+    hasRealTimeVariable
+    realTimeVariable {
+      variableType
+      key
+      value
+      array { key data }
+      minValue
+      maxValue
+      visible
+      x
+      y
+      width
+      height
+      object
+    }
+  }
+}
+`;
+
+/**
+ * @typedef {Object} EntryAuth
+ * @property {string=} csrfToken  - 'csrf-token' 헤더 값 (있으면)
+ * @property {string=} xToken     - 'x-token' 헤더 값 (있으면)
+ * @property {string=} cookie     - 로그인 쿠키 문자열 (있으면)
+ */
+
+/**
+ * @param {Object} params
+ * @param {string} params.id
+ * @param {string=} params.groupId
+ * @param {EntryAuth=} params.auth
+ * @param {string=} params.baseUrl
+ * @returns {Promise<any>} data.project
+ */
+async function selectProject({ id, groupId, auth = {}, baseUrl = DEFAULT_BASE_URL }) {
+  if (!id || typeof id !== "string") throw new Error("id가 필요해요 (string).");
+
+  const url = `${baseUrl}/graphql/SELECT_PROJECT`;
+
+  const headers = {
+    "accept": "*/*",
+    "content-type": "application/json",
+    "x-client-type": "Client",
+    // 서버가 referer 체크하는 케이스가 있어서 기본값으로 하나 넣어둠 (필요시 바꿔도 됨)
+    "referer": `${baseUrl}/project/${id}`,
+  };
+
+  if (auth.csrfToken) headers["csrf-token"] = auth.csrfToken;
+  if (auth.xToken) headers["x-token"] = auth.xToken;
+  if (auth.cookie) headers["cookie"] = auth.cookie;
+
+  const body = {
+    operationName: "SELECT_PROJECT",
+    variables: { id, ...(groupId ? { groupId } : {}) },
+    query: SELECT_PROJECT_QUERY,
+  };
+
+  const res = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
+
+  // 엔트리 쪽이 가끔 200이 아니면 HTML을 주기도 해서 텍스트로 먼저 받는 게 안전
+  const text = await res.text();
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new Error(`SELECT_PROJECT 응답이 JSON이 아님 (status=${res.status}). 일부: ${text.slice(0, 200)}`);
+  }
+
+  if (!res.ok) {
+    throw new Error(`SELECT_PROJECT HTTP ${res.status}: ${JSON.stringify(json).slice(0, 400)}`);
+  }
+
+  if (json.errors?.length) {
+    const msg = json.errors.map(e => e.message).join(" | ");
+    throw new Error(`SELECT_PROJECT GraphQL errors: ${msg}`);
+  }
+
+  const project = json?.data?.project;
+  if (!project) {
+    throw new Error(`SELECT_PROJECT 실패: data.project 없음. (비공개/로그인 필요일 수 있음)`);
+  }
+
+  return project;
+}
+
+module.exports = { selectProject };
+
+/**
+ * Node 16이면:
+ *   npm i undici
+ * 그리고 파일 맨 위에:
+ *   const { fetch } = require("undici");
+ */

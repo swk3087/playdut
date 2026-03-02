@@ -1,0 +1,19 @@
+node_modules
+npm-debug.log*
+.DS_Store
+.vscode
+.idea
+
+# build
+server/dist
+web/dist
+
+# env
+.env
+.env.*
+
+# caches
+*.tsbuildinfo
+
+# reference only
+entry-js/

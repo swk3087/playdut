@@ -11,51 +11,6 @@ query SELECT_PROJECT($id: ID!, $groupId: ID) {
     id
     name
     isopen
-    showComment
-    blamed
-    category
-    categoryCode
-    created
-    updated
-    published
-    isFirstPublish
-    special
-    staffPicked
-    ranked
-    visit
-    likeCnt
-    comment
-    favorite
-    shortenUrl
-    hashId
-    tags
-    description
-    description2
-    description3
-
-    thumb { filename imageType }
-
-    parent {
-      id
-      name
-      user { id nickname }
-    }
-
-    commentGroup { group count }
-    likeCntGroup { group count }
-    visitGroup { group count }
-    recentGroup { group count }
-
-    user {
-      id
-      nickname
-      profileImage { filename imageType }
-      status { following follower }
-      description
-      role
-      mark { filename imageType }
-    }
-
     speed
     objects
     variables
@@ -69,22 +24,6 @@ query SELECT_PROJECT($id: ID!, $groupId: ID) {
     aiUtilizeBlocks
     hardwareLiteBlocks
     blockCategoryUsage
-
-    hasRealTimeVariable
-    realTimeVariable {
-      variableType
-      key
-      value
-      array { key data }
-      minValue
-      maxValue
-      visible
-      x
-      y
-      width
-      height
-      object
-    }
   }
 }
 `;
